@@ -11,6 +11,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -31,16 +32,12 @@ jobs:
 
       - name: Run Prettier check
         run: yarn format:check
-        continue-on-error: true
 
       - name: Run ESLint check
         run: yarn lint
-        continue-on-error: true
 
       - name: Run TypeScript check
         run: yarn tsc --noEmit
-        continue-on-error: true
 
       - name: Run tests
         run: yarn test
-        continue-on-error: true
