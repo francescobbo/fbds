@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - name: Run Prettier check
         run: yarn format:check
         continue-on-error: true
