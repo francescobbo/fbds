@@ -4,22 +4,25 @@ import { useSettings } from "../../contexts/ComponentsContext";
 import { Label, LabelProps } from "../Label";
 import { Hint, HintProps } from "../Hint";
 import { Error, ErrorProps } from "../Error";
-import { clsx } from "../../helpers";
+import { HTMLValidationResult, clsx } from "../../helpers";
 
-enum HTMLValidationResult {
-  VALID,
-  MISSING,
-  PATTERN_MISMATCH,
-  TOO_SHORT,
-  TOO_LONG,
-  TOO_LOW,
-  TOO_HIGH,
-}
+import { htmlValidations } from "../../helpers";
 
 export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
+  ref?: React.Ref<HTMLInputElement>;
+
   id: string;
   name: string;
-  ref?: React.Ref<HTMLInputElement>;
+
+  /**
+   * Class names to be applied to the input element.
+   */
+  className?: string | undefined;
+
+  /**
+   * Class names to be applied to the input element when an error is present.
+   */
+  errorClassName?: string | undefined;
 
   /**
    * The type of the input.
@@ -37,9 +40,21 @@ export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "
    */
   spellCheck?: boolean;
 
-  formGroup?: {
+  /**
+   * Settings for the element that wraps the component, including the label, input, hint, and error.
+   */
+  container?: {
+    /**
+     * Class names to be applied to the form group element.
+     */
     className?: string;
+
+    /**
+     * Class names to be applied to the form group element when an error is present.
+     */
+    errorClassName?: string;
   };
+
   label?: LabelProps;
   error?: ErrorProps;
   hint?: HintProps;
@@ -86,13 +101,14 @@ export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "
  */
 export function TextInput(props: TextInputProps) {
   const {
-    formGroup,
+    container,
     label,
     error,
     hint,
     type = "text",
     spellCheck = false,
     className,
+    errorClassName,
     layoutOrder,
     prefix,
     suffix,
@@ -101,25 +117,14 @@ export function TextInput(props: TextInputProps) {
     ...rest
   } = props;
 
-  const labelElement = label ? <Label {...label} htmlFor={rest.id} /> : null;
-  const hintElement = hint ? <Hint {...hint} id={`${rest.id}-hint`} /> : null;
-  const errorElement = error ? <Error {...error} id={`${rest.id}-error`} /> : null;
+  const labelElement = label ? <Label key="label" {...label} htmlFor={rest.id} /> : null;
+  const hintElement = hint ? <Hint key="hint" {...hint} id={`${rest.id}-hint`} /> : null;
+  const errorElement = error ? <Error key="error" {...error} id={`${rest.id}-error`} /> : null;
 
-  const {
-    debug,
-    inputClasses,
-    inputErrorClasses,
-    formGroupClasses,
-    formGroupErrorClasses,
-    inputLayoutOrder,
-  } = useSettings();
+  const { debug } = useSettings();
 
-  const classes = clsx(inputClasses, error && inputErrorClasses, className);
-  const groupClasses = clsx(
-    formGroupClasses,
-    !!error && formGroupErrorClasses,
-    formGroup?.className,
-  );
+  const classes = clsx(className, error && errorClassName);
+  const containerClasses = clsx(container?.className, error && container?.errorClassName);
 
   // Warn against common issues
   if (debug) {
@@ -132,7 +137,7 @@ export function TextInput(props: TextInputProps) {
     }
   }
 
-  const order = layoutOrder || inputLayoutOrder || ["label", "input", "hint", "error"];
+  const order = layoutOrder || ["label", "input", "hint", "error"];
 
   const hasHint = hint && (order.includes("hint") || (order.includes("hintOrError") && !error));
   const hasError = error && (order.includes("error") || order.includes("hintOrError"));
@@ -143,41 +148,11 @@ export function TextInput(props: TextInputProps) {
       .join(" ") || undefined;
 
   const runHtmlValidations = (value: string) => {
-    if (rest.required && !value) {
-      onValidation?.(HTMLValidationResult.MISSING);
+    if (!onValidation) {
       return;
     }
 
-    if (
-      rest.pattern &&
-      // NOTE: The "v" flag is the correct one to use, but it's yet widely supported.
-      !new RegExp("^(?:" + rest.pattern + ")$", "u").test(value)
-    ) {
-      onValidation?.(HTMLValidationResult.PATTERN_MISMATCH);
-      return;
-    }
-
-    if (rest.maxLength && value.length > rest.maxLength) {
-      onValidation?.(HTMLValidationResult.TOO_LONG);
-      return;
-    }
-
-    if (rest.minLength && value.length < rest.minLength) {
-      onValidation?.(HTMLValidationResult.TOO_SHORT);
-      return;
-    }
-
-    if (rest.min && Number(value) < Number(rest.min)) {
-      onValidation?.(HTMLValidationResult.TOO_LOW);
-      return;
-    }
-
-    if (rest.max && Number(value) > Number(rest.max)) {
-      onValidation?.(HTMLValidationResult.TOO_HIGH);
-      return;
-    }
-
-    onValidation?.(HTMLValidationResult.VALID);
+    onValidation(htmlValidations(value, rest));
   };
 
   const [lastValue, setLastValue] = React.useState(rest.value);
@@ -211,6 +186,7 @@ export function TextInput(props: TextInputProps) {
 
   const input = (
     <input
+      key="input"
       type={type}
       className={classes}
       spellCheck={spellCheck}
@@ -225,10 +201,10 @@ export function TextInput(props: TextInputProps) {
 
   const inputWithPrefixSuffix =
     ((prefix || suffix) && (
-      <div className="flex items-center relative">
-        {prefix && <div className="absolute">{prefix.children}</div>}
+      <div className="">
+        {prefix?.children}
         {input}
-        {suffix && <div className="absolute right-0">{suffix.children}</div>}
+        {suffix?.children}
       </div>
     )) ||
     input;
@@ -241,7 +217,7 @@ export function TextInput(props: TextInputProps) {
     input: inputWithPrefixSuffix,
   };
 
-  return <div className={groupClasses}>{order.map((element) => elements[element])}</div>;
+  return <div className={containerClasses}>{order.map((element) => elements[element])}</div>;
 }
 
 TextInput.displayName = "TextInput";
