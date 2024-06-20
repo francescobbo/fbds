@@ -8,13 +8,13 @@ export type ErrorProps = {
 } & React.LabelHTMLAttributes<HTMLDivElement>;
 
 export function Error(props: ErrorProps) {
-  const { children, className, wrapper, ...rest } = props;
+  const { children, wrapper, ...rest } = props;
 
   const { errorClasses } = useContext(ComponentsContext);
-  const classes = `${errorClasses} ${className || ""}`.trim();
+  const classes = `${errorClasses} ${rest.className || ""}`.trim();
 
   const error = (
-    <div className={classes} {...rest}>
+    <div {...rest} className={classes}>
       {children}
     </div>
   );

@@ -8,13 +8,13 @@ export type LabelProps = {
 } & React.LabelHTMLAttributes<HTMLLabelElement>;
 
 export function Label(props: LabelProps) {
-  const { children, className, wrapper, ...rest } = props;
+  const { children, wrapper, ...rest } = props;
 
   const { labelClasses } = useContext(ComponentsContext);
-  const classes = `${labelClasses} ${className || ""}`.trim();
+  const classes = `${labelClasses} ${rest.className || ""}`.trim();
 
   const label = (
-    <label className={classes} {...rest}>
+    <label {...rest} className={classes}>
       {children}
     </label>
   );

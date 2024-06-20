@@ -97,7 +97,6 @@ export function TextInput(props: TextInputProps) {
     spellCheck = false,
     className,
     layoutOrder,
-    style,
     prefix,
     suffix,
     onDomChange,

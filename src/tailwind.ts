@@ -48,6 +48,6 @@ const THEMES = {
   }
 }
 
-export default function({ addComponents, theme }: { addComponents: Function, theme: string }) {
+export default function({ addComponents }: { addComponents: (_: Record<string, Record<string, unknown>>) => void }) {
   addComponents(THEMES.uswds);
 }

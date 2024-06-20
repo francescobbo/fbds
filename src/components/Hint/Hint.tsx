@@ -8,13 +8,13 @@ export type HintProps = {
 } & React.LabelHTMLAttributes<HTMLDivElement>;
 
 export function Hint(props: HintProps) {
-  const { children, className, wrapper, ...rest } = props;
+  const { children, wrapper, ...rest } = props;
 
   const { hintClasses } = useContext(ComponentsContext);
-  const classes = `${hintClasses} ${className || ""}`.trim();
+  const classes = `${hintClasses} ${rest.className || ""}`.trim();
 
   const hint = (
-    <div className={classes} {...rest}>
+    <div {...rest} className={classes}>
       {children}
     </div>
   );
