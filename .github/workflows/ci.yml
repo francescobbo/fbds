@@ -11,7 +11,6 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       matrix:
         node: [18, 20, 22]
@@ -35,9 +34,12 @@ jobs:
 
       - name: Run ESLint check
         run: yarn lint
+        if: ${{ success() || failure() }}
 
       - name: Run TypeScript check
         run: yarn tsc --noEmit
+        if: ${{ success() || failure() }}
 
       - name: Run tests
         run: yarn test
+        if: ${{ success() || failure() }}
