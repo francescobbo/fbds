@@ -1,8 +1,7 @@
 const THEMES = {
   govUk: {
     ".fbds-input": {
-      "@apply w-full p-1.5 h-10 border-2 border-neutral-950 rounded-none appearance-none":
-        {},
+      "@apply w-full p-1.5 h-10 border-2 border-neutral-950 rounded-none appearance-none": {},
       "@apply focus:outline focus:outline-offset-0 focus:outline-yellow-400 focus:outline-[3px] focus:shadow-[inset_0_0_0_2px]":
         {},
       "@apply disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit":
@@ -30,8 +29,7 @@ const THEMES = {
     ".fbds-input": {
       "@apply w-full p-2 h-10 border border-zinc-600 rounded-none appearance-none text-zinc-900":
         {},
-      "@apply focus:outline focus:outline-offset-0 focus:outline-blue-500 focus:outline-4":
-        {},
+      "@apply focus:outline focus:outline-offset-0 focus:outline-blue-500 focus:outline-4": {},
       "@apply disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent disabled:text-inherit":
         {},
     },

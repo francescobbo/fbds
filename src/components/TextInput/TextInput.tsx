@@ -16,10 +16,7 @@ enum HTMLValidationResult {
   TOO_HIGH,
 }
 
-export type TextInputProps = Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  "prefix"
-> & {
+export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "prefix"> & {
   id: string;
   name: string;
   ref?: React.Ref<HTMLInputElement>;
@@ -106,9 +103,7 @@ export function TextInput(props: TextInputProps) {
 
   const labelElement = label ? <Label {...label} htmlFor={rest.id} /> : null;
   const hintElement = hint ? <Hint {...hint} id={`${rest.id}-hint`} /> : null;
-  const errorElement = error ? (
-    <Error {...error} id={`${rest.id}-error`} />
-  ) : null;
+  const errorElement = error ? <Error {...error} id={`${rest.id}-error`} /> : null;
 
   const {
     debug,
@@ -133,27 +128,17 @@ export function TextInput(props: TextInputProps) {
     }
 
     if (rest.placeholder && !label && !rest["aria-label"]) {
-      console.warn(
-        "TextInput: Placeholders should not be used as a replacement for labels.",
-      );
+      console.warn("TextInput: Placeholders should not be used as a replacement for labels.");
     }
   }
 
-  const order = layoutOrder ||
-    inputLayoutOrder || ["label", "input", "hint", "error"];
+  const order = layoutOrder || inputLayoutOrder || ["label", "input", "hint", "error"];
 
-  const hasHint =
-    hint &&
-    (order.includes("hint") || (order.includes("hintOrError") && !error));
-  const hasError =
-    error &&
-    (order.includes("error") || (order.includes("hintOrError") && error));
+  const hasHint = hint && (order.includes("hint") || (order.includes("hintOrError") && !error));
+  const hasError = error && (order.includes("error") || order.includes("hintOrError"));
 
   const describedBy =
-    [
-      hasHint ? `${rest.id}-hint` : undefined,
-      hasError ? `${rest.id}-error` : undefined,
-    ]
+    [hasHint ? `${rest.id}-hint` : undefined, hasError ? `${rest.id}-error` : undefined]
       .filter(Boolean)
       .join(" ") || undefined;
 
@@ -256,11 +241,7 @@ export function TextInput(props: TextInputProps) {
     input: inputWithPrefixSuffix,
   };
 
-  return (
-    <div className={groupClasses}>
-      {order.map((element) => elements[element])}
-    </div>
-  );
+  return <div className={groupClasses}>{order.map((element) => elements[element])}</div>;
 }
 
 TextInput.displayName = "TextInput";

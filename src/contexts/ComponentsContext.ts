@@ -11,19 +11,13 @@ const defaultValue = {
   inputErrorClasses: "fbds-input--error",
   labelClasses: "fbds-label",
 
-  inputLayoutOrder: [
-    "label",
-    "input",
-    "hint",
-    "error",
-  ] as TextInputProps["layoutOrder"],
+  inputLayoutOrder: ["label", "input", "hint", "error"] as TextInputProps["layoutOrder"],
   handleHtmlValidations: true,
 };
 
 type ComponentsContextType = Partial<typeof defaultValue>;
 
-export const ComponentsContext =
-  createContext<ComponentsContextType>(defaultValue);
+export const ComponentsContext = createContext<ComponentsContextType>(defaultValue);
 
 export function useSettings() {
   const context = useContext(ComponentsContext);
