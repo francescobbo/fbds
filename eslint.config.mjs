@@ -3,6 +3,7 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 import { fixupConfigRules } from "@eslint/compat";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   {files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
@@ -16,6 +17,7 @@ export default [
       react: {
         version: "19.0.0"
       }
-    }
-  }
+    },
+  },
+  eslintConfigPrettier
 ];
